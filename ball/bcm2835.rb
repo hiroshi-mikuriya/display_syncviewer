@@ -135,7 +135,7 @@ module I2C
   # @param [Integer] slave
   # @param [Integer] addr
   # @param [Integer] len
-  # @return read data
+  # @return [String] read data
   def self.read(slave, addr, len)
     @mutex.synchronize do
       pkt = [addr].pack('C*')
