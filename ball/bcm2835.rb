@@ -81,6 +81,9 @@ module SPI
   CS0 = 0
   CS1 = 1
 
+  ##
+  # Initialize SPI.
+  # exit(1) if failed
   def self.init
     unless BCM.bcm2835_init == 1
       warn 'failed to init bcm2835'
@@ -109,6 +112,9 @@ end
 ##
 # I2C wrapper
 module I2C
+  ##
+  # Initialize I2C.
+  # exit(1) if failed
   def self.init
     unless BCM.bcm2835_init == 1
       warn 'failed to init bcm2835'
