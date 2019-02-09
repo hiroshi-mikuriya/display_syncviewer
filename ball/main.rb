@@ -27,7 +27,7 @@ end
 # get from sync viewer and control led
 c = HTTPClient.new
 c.debug_dev = $stderr
-url = "http://127.0.0.1/api/correlations?epoch_time=#{Time.now.to_i - 1}"
+url = "http://127.0.0.1/api/correlations/=#{(Time.now.to_i - 1) * 1000} "
 
 {
   FPGA::LED_MODE => 0x08, # stop demo and set blink mode
