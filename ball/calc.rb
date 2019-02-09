@@ -19,8 +19,10 @@ def calc(json_from_sync_viewer)
   activities = d[:data].values.map { |v| v[:activity] }
   amplitudes = d[:data].values.map do |v0|
     v0[:crosscorrelations].map { |v1| v1[:amplitude] }
-  end.flatten
-  [activities, amplitudes].map { |a| average(a) }
+  end
+  # activities: [0.06605125037620148, 0.4, 0.9]
+  # amplitudes: [[7.7674, 1.234], [6.9324, 1.5432], [6.9324, 1.5432]]
+  [activities, amplitudes.flatten].map { |a| average(a) }
 end
 
 def activity_level(act)
@@ -61,9 +63,41 @@ if $PROGRAM_NAME == __FILE__
               "followerID": "944f98bceafdf2e3",
               "phase": 310,
               "value": -5.4456
+            }
+          ]
+        },
+        "80124ad9e99d7a6c": {
+          "activity": 0.4,
+          "position": [1, 2],
+          "sensorIndex": 0,
+          "crosscorrelations": [
+            {
+              "amplitude": 6.9324,
+              "followerID": "944f98bceafdf2e3",
+              "phase": 310,
+              "value": -5.4456
             },
             {
-              "amplitude": 12.345,
+              "amplitude": 1.5432,
+              "followerID": "37c64106a9b65e66",
+              "phase": 310,
+              "value": -5.4456
+            }
+          ]
+        },
+        "944f98bceafdf2e3": {
+          "activity": 0.9,
+          "position": [1, 2],
+          "sensorIndex": 0,
+          "crosscorrelations": [
+            {
+              "amplitude": 6.9324,
+              "followerID": "80124ad9e99d7a6c",
+              "phase": 310,
+              "value": -5.4456
+            },
+            {
+              "amplitude": 1.5432,
               "followerID": "37c64106a9b65e66",
               "phase": 310,
               "value": -5.4456
