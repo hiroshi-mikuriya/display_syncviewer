@@ -81,7 +81,7 @@ module SPI
   CS0 = 0
   CS1 = 1
 
-  def init
+  def self.init
     unless BCM.bcm2835_init
       warn 'failed to init bcm2835'
       exit(1)
@@ -97,13 +97,53 @@ module SPI
   # @param addr [Integer] 2bytes
   # @param data [Array] data
   # @param chip_select chip select (CS0 or CS1)
-  def write(addr, data, chip_select)
+  def self.write(addr, data, chip_select)
     pkt = [2].pack('C*') + [addr].pack('n*') + [data].flatten.pack('C*')
     @mutex.synchronize do
       BCM.bcm2835_spi_chipSelect(chip_select)
       BCM.bcm2835_spi_writenb(pkt, pkt.size)
     end
   end
+end
 
-  module_function :init, :write
+##
+# I2C wrapper
+module I2C
+  def self.init
+    unless BCM.bcm2835_init
+      warn 'failed to init bcm2835'
+      exit(1)
+    end
+    BCM.bcm2835_i2c_begin
+    BCM.bcm2835_i2c_setClockDivider(626) # 626 = 2.504us = 399.3610 kHz
+    @mutex = Mutex.new
+  end
+
+  ##
+  # @param [Integer] slave
+  # @param [Array] adata
+  # @return 0: OK
+  def self.write(slave, data)
+    pkt = [data].flatten.pack('C*')
+    @mutex.synchronize do
+      BCM.bcm2835_i2c_setSlaveAddress(slave)
+      BCM.bcm2835_i2c_write(pkt, pkt.size)
+    end
+  end
+
+  ##
+  # @param [Integer] slave
+  # @param [Integer] addr
+  # @param [Integer] len
+  # @return read data
+  def self.read(slave, addr, len)
+    @mutex.synchronize do
+      pkt = [addr].pack('C*')
+      buf = ([0] * len).pack('C*')
+      BCM.bcm2835_i2c_setSlaveAddress(slave)
+      return buf if BCM.bcm2835_i2c_write(pkt, pkt.size).zero? &&
+                    BCM.bcm2835_i2c_read(buf, buf.size).zero?
+      warn 'failed to read I2C'
+    end
+  end
 end
