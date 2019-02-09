@@ -18,7 +18,7 @@ Thread.new do
 
   loop do
     SPI.write(FPGA::OKED_SELECT, (COLOR << 4) + COLOR, SPI::CS0)
-    sleep(3)
+    sleep(1 + 3 * rand)
     SPI.write(FPGA::OKED_SELECT, (CLOSE << 4) + CLOSE, SPI::CS0)
     sleep(0.1)
   end
