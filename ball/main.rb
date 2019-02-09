@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'httpclient'
-require 'json'
 require './bcm2835'
 require './raw'
+require './calc'
 
 SPI.init
 
@@ -26,7 +26,7 @@ end
 # get from sync viewer and control led
 c = HTTPClient.new
 c.debug_dev = $stderr
-url = "http://127.0.0.1/api/alltimeseries?epoch_time=#{Time.now.to_i - 1}"
+url = "http://127.0.0.1/api/correlations?epoch_time=#{Time.now.to_i - 1}"
 
 {
   FPGA.LED_MODE => 0x08, # stop demo and set blink mode
@@ -36,9 +36,10 @@ url = "http://127.0.0.1/api/alltimeseries?epoch_time=#{Time.now.to_i - 1}"
 
 loop do
   begin
-    res = JSON.parse(c.get(url).body, symbolize_names: true)
+    act, amp = average(c.get(url).body)
   rescue => e
     p e
+    SPI.write(FPGA.LED_REG, [0] * 32 * 3 * 8, 0) # clear leds.
   end
   sleep(1)
   puts 'hello'
