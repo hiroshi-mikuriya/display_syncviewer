@@ -16,6 +16,20 @@ def average(json_from_sync_viewer)
   [act, amp]
 end
 
+def activity_level(act)
+  return 0 if act < 1.0
+  return 1 if act < 2.0
+  return 2 if act < 3.0
+  3
+end
+
+def amplitude_level(amp)
+  return 0 if amp < 1.0
+  return 1 if amp < 2.0
+  return 2 if amp < 3.0
+  return 3 if amp < 4.0
+  4
+end
 
 ##
 # Debug

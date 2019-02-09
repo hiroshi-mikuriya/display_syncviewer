@@ -4,6 +4,7 @@ require 'httpclient'
 require './bcm2835'
 require './raw'
 require './calc'
+require './fpga'
 
 SPI.init
 
@@ -16,9 +17,9 @@ Thread.new do
   end
 
   loop do
-    SPI.write(FPGA.OKED_SELECT, [(COLOR << 4) + COLOR], SPI::CS0)
+    SPI.write(FPGA::OKED_SELECT, [(COLOR << 4) + COLOR], SPI::CS0)
     sleep(3)
-    SPI.write(FPGA.OKED_SELECT, [(CLOSE << 4) + CLOSE], SPI::CS0)
+    SPI.write(FPGA::OKED_SELECT, [(CLOSE << 4) + CLOSE], SPI::CS0)
     sleep(0.1)
   end
 end
@@ -29,18 +30,23 @@ c.debug_dev = $stderr
 url = "http://127.0.0.1/api/correlations?epoch_time=#{Time.now.to_i - 1}"
 
 {
-  FPGA.LED_MODE => 0x08, # stop demo and set blink mode
-  FPGA.LED_FREQ => 0x20, # set blink freq
-  FPGA.POWER_CTRL => 0x00 # STOP Raspberry Pi Sleep Timer
+  FPGA::LED_MODE => 0x08, # stop demo and set blink mode
+  FPGA::POWER_CTRL => 0x00 # STOP Raspberry Pi Sleep Timer
 }.each { |reg, v| SPI.write(reg, [v], 0) }
+
+SPI.write(FPGA::LED_REG, [0] * 32 * 3 * 8, 0) # clear leds.
 
 loop do
   begin
     act, amp = average(c.get(url).body)
+    color = [[0xFF, 0x00, 0x00], [0xFF, 0x20, 0x00], [0xFF, 0xFF, 0x00],
+             [0x00, 0xFF, 0x00], [0x00, 0x00, 0xFF]][amplitude_level(amp)]
+    freq = [64, 32, 16, 8][activity_level(act)]
+    SPI.write(FPGA::LED_FREQ, [freq], 0)
+    SPI.write(FPGA::LED_REG, color * 32 * 2, 0)
   rescue => e
     p e
-    SPI.write(FPGA.LED_REG, [0] * 32 * 3 * 8, 0) # clear leds.
+    SPI.write(FPGA::LED_REG, [0] * 32 * 3 * 8, 0) # clear leds.
   end
   sleep(1)
-  puts 'hello'
 end
