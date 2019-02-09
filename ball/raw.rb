@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 COLOR,LEFT,RIGHT,OPEN,CLOSE = (0..4).to_a
 

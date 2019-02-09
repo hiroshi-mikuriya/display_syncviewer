@@ -16,9 +16,9 @@ Thread.new do
   end
 
   loop do
-    SPI.write(1, [(COLOR << 4) + COLOR], SPI::CS0)
+    SPI.write(FPGA.OKED_SELECT, [(COLOR << 4) + COLOR], SPI::CS0)
     sleep(3)
-    SPI.write(1, [(CLOSE << 4) + CLOSE], SPI::CS0)
+    SPI.write(FPGA.OKED_SELECT, [(CLOSE << 4) + CLOSE], SPI::CS0)
     sleep(0.1)
   end
 end
@@ -27,6 +27,12 @@ end
 c = HTTPClient.new
 c.debug_dev = $stderr
 url = "http://127.0.0.1/api/alltimeseries?epoch_time=#{Time.now.to_i - 1}"
+
+{
+  FPGA.LED_MODE => 0x08, # stop demo and set blink mode
+  FPGA.LED_FREQ => 0x20, # set blink freq
+  FPGA.POWER_CTRL => 0x00 # STOP Raspberry Pi Sleep Timer
+}.each { |reg, v| SPI.write(reg, [v], 0) }
 
 loop do
   begin
