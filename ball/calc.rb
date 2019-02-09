@@ -1,19 +1,26 @@
 # frozen_string_literal: true
 
-require "json"
+require 'json'
+
+def average(ary)
+  ary.inject(&:+) / [ary.size, 1].max
+end
+
+def median(ary)
+  a = ary.clone.sort
+  a.size.odd? ? a[a.size / 2] : a[a.size / 2 - 1, 2].inject(&:+) / 2
+end
 
 ##
 # @param [String] json_from_sync_viewer
 # @return average of activities and amplitudes
-def average(json_from_sync_viewer)
+def calc(json_from_sync_viewer)
   d = JSON.parse(json_from_sync_viewer, symbolize_names: true)
   activities = d[:data].values.map { |v| v[:activity] }
   amplitudes = d[:data].values.map do |v0|
     v0[:crosscorrelations].map { |v1| v1[:amplitude] }
   end.flatten
-  act = activities.inject(&:+) / activities.size
-  amp = amplitudes.inject(&:+) / amplitudes.size
-  [act, amp]
+  [activities, amplitudes].map { |a| average(a) }
 end
 
 def activity_level(act)
@@ -54,6 +61,12 @@ if $PROGRAM_NAME == __FILE__
               "followerID": "944f98bceafdf2e3",
               "phase": 310,
               "value": -5.4456
+            },
+            {
+              "amplitude": 12.345,
+              "followerID": "37c64106a9b65e66",
+              "phase": 310,
+              "value": -5.4456
             }
           ]
         }
@@ -62,5 +75,5 @@ if $PROGRAM_NAME == __FILE__
     }
   ).gsub(/\s/, '')
 
-  p average(txt)
+  p calc(txt)
 end

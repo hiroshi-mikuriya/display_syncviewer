@@ -38,10 +38,10 @@ SPI.write(FPGA::LED_REG, [0] * 32 * 3 * 8, 0) # clear leds.
 
 loop do
   begin
-    act, amp = average(c.get(url).body)
+    act, amp = calc(c.get(url).body)
     color = [[0xFF, 0x00, 0x00], [0xFF, 0x20, 0x00], [0xFF, 0xFF, 0x00],
              [0x00, 0xFF, 0x00], [0x00, 0x00, 0xFF]][amplitude_level(amp)]
-    freq = [64, 32, 16, 8][activity_level(act)]
+    freq = [0x40, 0x20, 0x10, 0x08][activity_level(act)]
     SPI.write(FPGA::LED_FREQ, [freq], 0)
     SPI.write(FPGA::LED_REG, color * 32 * 2, 0)
   rescue => e
