@@ -1,0 +1,20 @@
+# すべてをignore
+*
+*/*
+
+# ディレクトリをホワイトリストに追加
+!*/
+
+# 個別にホワイトリストに追加
+!.gitignore
+!*.md
+!*.rb
+!*.ru
+!*.py
+!Gemfile
+!Gemfile.lock
+!*.txt
+!*.png
+!*.jpg
+!*.bmp
+
