@@ -7,7 +7,7 @@ SyncViewerに定期的にアクセスして情報を得てLEDを発光させま�
 
 # Setup
 
-Instatll bcm2835
+Instatll bcm2835 to write FPGA register.
 
 ```
 $ sudo wget http://www.airspayce.com/mikem/bcm2835/bcm2835-1.44.tar.gz

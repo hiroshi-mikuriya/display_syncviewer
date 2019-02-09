@@ -99,7 +99,7 @@ module SPI
   # @param data [Array] data
   # @param chip_select chip select (CS0 or CS1)
   def write(addr, data, chip_select)
-    pkt = [2].pack('C*') + [addr].pack('n*') + data.pack('C*')
+    pkt = [2].pack('C*') + [addr].pack('n*') + [data].flatten.pack('C*')
     @mutex.synchronize do
       BCM.bcm2835_spi_chipSelect(chip_select)
       BCM.bcm2835_spi_writenb(pkt, pkt.size)
