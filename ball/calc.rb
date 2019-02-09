@@ -43,7 +43,7 @@ end
 ##
 # Debug
 if $PROGRAM_NAME == __FILE__
-  txt = %({
+  p calc %({
       "IDs": ["37c64106a9b65e66", "80124ad9e99d7a6c", "944f98bceafdf2e3"],
       "nodePhase": [157.6071, -295.3914, 107.2753],
       "data": {
@@ -107,7 +107,5 @@ if $PROGRAM_NAME == __FILE__
       },
       "time": 1521701589020
     }
-  ).gsub(/\s/, '')
-
-  p calc(txt)
+  )
 end
