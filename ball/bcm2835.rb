@@ -9,7 +9,7 @@ module BCM
   dlload 'libbcm2835.so'
   extern 'int bcm2835_init(void)'
   extern 'int bcm2835_close(void)'
-  extern 'void  bcm2835_set_debug(unsigned char debug)'
+  extern 'void bcm2835_set_debug(unsigned char debug)'
   extern 'unsigned int bcm2835_version(void)'
   extern 'unsigned int* bcm2835_regbase(unsigned char regbase)'
   extern 'unsigned int bcm2835_peri_read(volatile unsigned int* paddr)'
