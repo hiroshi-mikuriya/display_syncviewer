@@ -82,7 +82,7 @@ module SPI
   CS1 = 1
 
   def self.init
-    unless BCM.bcm2835_init
+    unless BCM.bcm2835_init == 1
       warn 'failed to init bcm2835'
       exit(1)
     end
@@ -110,7 +110,7 @@ end
 # I2C wrapper
 module I2C
   def self.init
-    unless BCM.bcm2835_init
+    unless BCM.bcm2835_init == 1
       warn 'failed to init bcm2835'
       exit(1)
     end
