@@ -90,9 +90,8 @@ module SPI
     BCM.bcm2835_spi_setBitOrder(1) # MSB First
     BCM.bcm2835_spi_setDataMode(0) # CPOL = 0, CPHA = 0
     BCM.bcm2835_spi_setClockDivider(128)
+    @mutex = Mutex.new
   end
-
-  @mutex = Mutex.new
 
   ##
   # @param addr [Integer] 2bytes
