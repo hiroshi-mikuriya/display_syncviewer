@@ -12,9 +12,7 @@ c = { x: { max: 86.572265625, min: 16.9921875 },
       y: { max: 1.904296875, min: -68.408203125 },
       z: { max: -60.05859375, min: -139.892578125 } }.freeze
 
-start = Time.now
-count = 0
-while Time.now - start < 10
+loop do
   if (0x01 & I2C.read(0x0C, 0x02, 1).unpack('C*').first).zero?
     sleep(0.010)
     next
@@ -27,6 +25,4 @@ while Time.now - start < 10
   end
   r360 = ((Math.atan2(y, x) + Math::PI) / (2 * Math::PI) * 360).to_i # 360度に変換。北:0 東:90 南:180 西:270になるっぽい。
   p r360
-  count += 1
 end
-puts "#{count / 10.0} fps"
