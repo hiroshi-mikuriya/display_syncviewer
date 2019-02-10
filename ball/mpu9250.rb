@@ -1,5 +1,6 @@
 # frozen_string_literal  true
 # 参考：http://akiracing.com/2018/02/04/how_to_use_mpu9250/
+# レジスタマップ：https://www.invensense.com/wp-content/uploads/2015/02/RM-MPU-9250A-00-v1.6.pdf
 
 require './bcm2835'
 
@@ -20,7 +21,7 @@ loop do
   res = I2C.read(0x0C, 0x03, 7)
   x0, y0, z0 = res.unpack('s*')
   x, y, = { x: x0, y: y0, z: z0 }.map do |k, v|
-    1.0 * (v - c[k][:min]) / (c[k][:max] - c[k][:min]) * 2 - 1 # -1から1に線形変換
+    2.0 * (v - c[k][:min]) / (c[k][:max] - c[k][:min]) - 1 # -1から1に線形変換
   end
   r360 = ((Math.atan2(y, x) + Math::PI) / (2 * Math::PI) * 360).to_i # 360度に変換。北:0 東:90 南:180 西:270になるっぽい。
   p r360
