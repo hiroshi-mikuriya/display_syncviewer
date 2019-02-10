@@ -7,13 +7,14 @@ I2C.init
 I2C.write(0x69, [0x37, 0x02]) # bypass mode(磁気センサが使用出来るようになる)
 I2C.write(0x0C, [0x0A, 0x16]) # 磁気センサのAD変換開始
 
+# キャリブレーション値
 c = { x: { max: 86.572265625, min: 16.9921875 },
       y: { max: 1.904296875, min: -68.408203125 },
       z: { max: -60.05859375, min: -139.892578125 } }.freeze
 
 loop do
   if (0x01 & I2C.read(0x0C, 0x02, 1).unpack('C*').first).zero?
-    sleep(0.1)
+    sleep(0.01)
     next
   end
   res = I2C.read(0x0C, 0x03, 7)
