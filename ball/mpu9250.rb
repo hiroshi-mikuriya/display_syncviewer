@@ -14,8 +14,8 @@ c = { x: { max: 245, min: -231 },
       z: { max: -6, min: -546 } }.freeze
 
 loop do
-  if (0x01 & I2C.read(0x0C, 0x02, 1).unpack('C*').first).zero?
-    sleep(0.010)
+  if (0x01 & I2C.read(0x0C, 0x02, 1)[0].ord).zero?
+    sleep(0.01)
     next
   end
   res = I2C.read(0x0C, 0x03, 7)
