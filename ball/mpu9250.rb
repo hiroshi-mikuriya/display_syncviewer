@@ -7,14 +7,16 @@ I2C.init
 I2C.write(0x69, [0x37, 0x02]) # bypass mode(磁気センサが使用出来るようになる)
 I2C.write(0x0C, [0x0A, 0x16]) # 磁気センサのAD変換開始
 
-# キャリブレーション値
+# センサー振れ幅。個体ごとに違う値になる。
 c = { x: { max: 86.572265625, min: 16.9921875 },
       y: { max: 1.904296875, min: -68.408203125 },
       z: { max: -60.05859375, min: -139.892578125 } }.freeze
 
-loop do
+start = Time.now
+count = 0
+while Time.now - start < 10
   if (0x01 & I2C.read(0x0C, 0x02, 1).unpack('C*').first).zero?
-    sleep(0.01)
+    sleep(0.010)
     next
   end
   res = I2C.read(0x0C, 0x03, 7)
@@ -23,5 +25,8 @@ loop do
   x, y, = { x: x1, y: y1, z: z1 }.map do |k, v|
     (v - c[k][:min]) / (c[k][:max] - c[k][:min]) * 2 - 1 # -1〜1に線形変換
   end
-  p ((Math.atan2(y, x) + Math::PI) / (2 * Math::PI) * 360).to_i # 360度に変換。北:0 東:90 南:180 西:270になるっぽい。
+  r360 = ((Math.atan2(y, x) + Math::PI) / (2 * Math::PI) * 360).to_i # 360度に変換。北:0 東:90 南:180 西:270になるっぽい。
+  p r360
+  count += 1
 end
+puts "#{count / 10.0} fps"
