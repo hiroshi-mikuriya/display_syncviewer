@@ -23,6 +23,6 @@ loop do
   x, y, = { x: x0, y: y0, z: z0 }.map do |k, v|
     2.0 * (v - c[k][:min]) / (c[k][:max] - c[k][:min]) - 1 # -1から1に線形変換
   end
-  r360 = ((Math.atan2(y, x) + Math::PI) / (2 * Math::PI) * 360).to_i # 360度に変換。北:0 東:90 南:180 西:270になるっぽい。
+  r360 = ((Math.atan2(y, x) + Math::PI) / (2 * Math::PI) * 360).to_i # 360度に変換。北:0 東:270 南:180 西:90になるっぽい。
   p r360
 end
