@@ -9,9 +9,7 @@ I2C.write(0x69, [0x37, 0x02]) # bypass mode(磁気センサが使用出来るよ
 I2C.write(0x0C, [0x0A, 0x16]) # 磁気センサのAD変換開始
 
 # センサー振れ幅。個体ごとに違う値になる。
-c = { x: { max: 245, min: -231 },
-      y: { max: 236, min: -238 },
-      z: { max: -6, min: -546 } }.freeze
+c = {:x=>{:min=>-243, :max=>234}, :y=>{:min=>-270, :max=>219}, :z=>{:min=>-484, :max=>-2}}
 
 loop do
   if (0x01 & I2C.read(0x0C, 0x02, 1)[0].ord).zero?
