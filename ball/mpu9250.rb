@@ -6,19 +6,23 @@ require './bcm2835'
 
 I2C.init
 I2C.write(0x69, [0x37, 0x02]) # bypass mode(磁気センサが使用出来るようになる)
-I2C.write(0x0C, [0x0A, 0x16]) # 磁気センサのAD変換開始
+I2C.write(0x0C, [0x0A, 0x0F]) # Fuse ROM access mode
+asax, asay, asaz = I2C.read(0x0C, 0x10, 3).unpack('C*')
+I2C.write(0x0C, [0x0A, 0x00]) # Power-down mode
+I2C.write(0x0C, [0x0A, 0x16]) # 16bits, Continuous measurement mode 2
 
 # センサー振れ幅。個体ごとに違う値になる。
-# c = {:x=>{:min=>-243, :max=>234}, :y=>{:min=>-270, :max=>219}, :z=>{:min=>-484, :max=>-2}}
-c = {:x=>{:min=>-81, :max=>513}, :y=>{:min=>-228, :max=>427}, :z=>{:min=>-271, :max=>365}}
+c = {:x=>{:min=>-212, :max=>279}, :y=>{:min=>-265, :max=>285}, :z=>{:min=>-620, :max=>179}}
 
-asax, asay, asaz = I2C.read(0x0C, 0x10, 3).unpack('C*')
 loop do
   if (0x01 & I2C.read(0x0C, 0x02, 1)[0].ord).zero?
     sleep(0.01)
     next
   end
-  hx, hy, hz = I2C.read(0x0C, 0x03, 7).unpack('s*')
+  res = I2C.read(0x0C, 0x03, 7)
+  next unless (res[6].ord & 0x08).zero? # overflow
+
+  hx, hy, hz = res.unpack('s*')
   x, y, =  { x: [hx, asax], y: [hy, asay], z: [hz, asaz] }.map do |k, (h, asa)|
     hadj = h * ((asa - 128) * 0.5 / 128 + 1)
     2.0 * (hadj - c[k][:min]) / (c[k][:max] - c[k][:min]) - 1 # -1から1に線形変換
