@@ -22,10 +22,10 @@ loop do
   next unless (res[6].ord & 0x08).zero? # overflow
 
   hx, hy, hz = res.unpack('s*')
-  { x: [hx, asax], y: [hy, asay], z: [hz, asaz] }.each do |k, (h, asa)|
+  { x: [hx, asax], y: [hy, asay], z: [hz, asaz] }.each do |xyz, (h, asa)|
     hadj = (h * ((asa - 128) * 0.5 / 128 + 1)).to_i
-    mm[k][:min] = [hadj, mm[k][:min]].min
-    mm[k][:max] = [hadj, mm[k][:max]].max
+    mm[xyz][:min] = [hadj, mm[xyz][:min]].min
+    mm[xyz][:max] = [hadj, mm[xyz][:max]].max
   end
   p mm
 end

@@ -23,9 +23,9 @@ loop do
   next unless (res[6].ord & 0x08).zero? # overflow
 
   hx, hy, hz = res.unpack('s*')
-  x, y, =  { x: [hx, asax], y: [hy, asay], z: [hz, asaz] }.map do |k, (h, asa)|
+  x, y, =  { x: [hx, asax], y: [hy, asay], z: [hz, asaz] }.map do |xyz, (h, asa)|
     hadj = h * ((asa - 128) * 0.5 / 128 + 1)
-    2.0 * (hadj - c[k][:min]) / (c[k][:max] - c[k][:min]) - 1 # -1から1に線形変換
+    2.0 * (hadj - c[xyz][:min]) / (c[xyz][:max] - c[xyz][:min]) - 1 # -1から1に線形変換
   end
   r360 = ((Math.atan2(y, x) + Math::PI) / (2 * Math::PI) * 360).to_i # 360度に変換。北:0 東:270 南:180 西:90になるっぽい。
   p r360
