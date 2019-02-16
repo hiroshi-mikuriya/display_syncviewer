@@ -20,9 +20,7 @@ def calc(json_from_sync_viewer)
   amplitudes = d[:data].values.map do |v0|
     v0[:crosscorrelations].map { |v1| v1[:amplitude] }
   end
-  # activities: [0.06605125037620148, 0.4, 0.9]
-  # amplitudes: [[7.7674, 1.234], [6.9324, 1.5432], [6.9324, 1.5432]]
-  amplitudes = amplitudes.flatten.select { |a| !a.zero? } # .delete(0.0)
+  amplitudes.flatten!.delete(0.0)
   # puts "activities : #{activities}"
   # puts "amplitudes : #{amplitudes}"
   [activities, amplitudes].map { |a| average(a) }
