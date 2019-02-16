@@ -26,8 +26,7 @@ end
 
 # get from sync viewer and control led
 c = HTTPClient.new
-c.debug_dev = $stderr
-url = "http://127.0.0.1/api/correlations/=#{(Time.now.to_i - 1) * 1000} "
+# c.debug_dev = $stderr
 
 {
   FPGA::LED_MODE => 0x08, # stop demo and set blink mode
@@ -37,7 +36,9 @@ url = "http://127.0.0.1/api/correlations/=#{(Time.now.to_i - 1) * 1000} "
 
 loop do
   begin
+    url = "http://192.168.11.10/api/correlations/#{(Time.now.to_i + 10) * 1000}"
     act, amp = calc(c.get(url).body)
+    puts "act: #{act}  amp: #{amp}"
     color = [[0xFF, 0x00, 0x00], [0xFF, 0x20, 0x00], [0xFF, 0xFF, 0x00],
              [0x00, 0xFF, 0x00], [0x00, 0x00, 0xFF]][amplitude_level(amp)]
     freq = [0x40, 0x20, 0x10, 0x08][activity_level(act)]
@@ -47,5 +48,5 @@ loop do
     p e
     SPI.write(FPGA::LED_REG, [0] * 32 * 3 * 8, 0) # clear leds.
   end
-  sleep(1)
+  # sleep(1)
 end

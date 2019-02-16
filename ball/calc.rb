@@ -22,21 +22,24 @@ def calc(json_from_sync_viewer)
   end
   # activities: [0.06605125037620148, 0.4, 0.9]
   # amplitudes: [[7.7674, 1.234], [6.9324, 1.5432], [6.9324, 1.5432]]
-  [activities, amplitudes.flatten].map { |a| average(a) }
+  amplitudes = amplitudes.flatten.select { |a| !a.zero? } # .delete(0.0)
+  # puts "activities : #{activities}"
+  # puts "amplitudes : #{amplitudes}"
+  [activities, amplitudes].map { |a| average(a) }
 end
 
 def activity_level(act)
-  return 0 if act < 1.0
-  return 1 if act < 2.0
-  return 2 if act < 3.0
+	return 0 if act < 0.02 
+	return 1 if act < 0.03
+	return 2 if act < 0.04
   3
 end
 
 def amplitude_level(amp)
-  return 0 if amp < 1.0
-  return 1 if amp < 2.0
-  return 2 if amp < 3.0
-  return 3 if amp < 4.0
+	return 0 if amp < 0.075
+	return 1 if amp < 0.1
+	return 2 if amp < 0.125
+	return 3 if amp < 0.15
   4
 end
 
