@@ -1,0 +1,13 @@
+[Unit]
+Description = my client
+After = my_server.service
+
+[Service]
+WorkingDirectory = /home/pi/socket/
+ExecStart = /home/pi/.rbenv/shims/ruby client.rb
+Restart = always
+Type = simple
+StandardOutput = journal
+
+[Install]
+WantedBy = multi-user.target

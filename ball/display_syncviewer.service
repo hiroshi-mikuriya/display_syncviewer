@@ -1,0 +1,14 @@
+[Unit]
+Description=display syncviewer
+After=display_syncviewer.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/pi/display_syncviewer/ball
+ExecStart=/home/pi/.rbenv/shims/ruby main.rb
+StandardOutput=journal
+Restart=on-failure
+RestartSec=3s
+
+[Install]
+WantedBy = multi-user.target

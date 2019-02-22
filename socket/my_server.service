@@ -1,0 +1,13 @@
+[Unit]
+Description = my server
+After = bluetooth.target
+
+[Service]
+WorkingDirectory = /home/pi/socket/
+ExecStart = /home/pi/.rbenv/shims/ruby server.rb
+Restart = always
+Type = notify
+StandardOutput = journal
+
+[Install]
+WantedBy = multi-user.target
